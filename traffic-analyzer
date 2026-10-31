@@ -1,0 +1,55 @@
+import sys
+from datetime import datetime
+from scapy.all import sniff, IP, TCP, UDP, Raw
+
+def packet_callback(packet):
+    # Check if the packet has an IP layer
+    if packet.haslayer(IP):
+        ip_layer = packet[IP]
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        src_ip = ip_layer.src
+        dst_ip = ip_layer.dst
+        proto = "OTHER"
+        src_port = "N/A"
+        dst_port = "N/A"
+
+        # Determine if it's TCP or UDP
+        if packet.haslayer(TCP):
+            proto = "TCP"
+            src_port = packet[TCP].sport
+            dst_port = packet[TCP].dport
+        elif packet.haslayer(UDP):
+            proto = "UDP"
+            src_port = packet[UDP].sport
+            dst_port = packet[UDP].dport
+
+        # Construct log entry
+        log_line = f"[{timestamp}] {proto} | {src_ip}:{src_port} -> {dst_ip}:{dst_port}"
+        print(log_line)
+
+        # Inspect raw payload if it exists (useful for reading plain text HTTP/DNS info)
+        if packet.haslayer(Raw):
+            payload = packet[Raw].load
+            # Print a safe printable preview of the payload data
+            printable_payload = ''.join([chr(b) if 32 <= b < 127 else '.' for b in payload])
+            if printable_payload.strip():
+                print(f"   ↳ Payload: {printable_payload[:80]}...")
+
+def main():
+    print("=" * 60)
+    print(" Starting Network Traffic Analyzer... Press Ctrl+C to stop.")
+    print("=" * 60)
+    
+    try:
+        # Sniff packets indefinitely (count=0). 
+        # filter="ip" ensures we only capture IP-based traffic.
+        sniff(filter="ip", prn=packet_callback, store=0)
+    except KeyboardInterrupt:
+        print("\nStopping analyzer. Goodbye!")
+        sys.exit(0)
+    except PermissionError:
+        print("\n[ERROR] Permission Denied! Please run this script with sudo or as Administrator.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
