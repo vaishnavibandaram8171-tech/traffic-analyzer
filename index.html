@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic Analyzer</title>
+    <meta
+      name="description"
+      content="Traffic Analyzer dashboard for identifying heavy congestion and recommending alternate routes."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar panel">
+        <div class="brand-block">
+          <p class="eyebrow">Route Intelligence</p>
+          <h1>Traffic Analyzer</h1>
+          <p class="subtitle">
+            Detect heavy congestion and choose a smoother direction before traffic slows your trip.
+          </p>
+        </div>
+
+        <div class="controls">
+          <div class="field">
+            <label for="fromNode">From</label>
+            <select id="fromNode" aria-label="Select origin"></select>
+          </div>
+
+          <div class="field">
+            <label for="toNode">To</label>
+            <select id="toNode" aria-label="Select destination"></select>
+          </div>
+
+          <button id="analyzeBtn" type="button">Analyze Route</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Avg traffic</span>
+            <strong id="avgTraffic">--</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Best time</span>
+            <strong id="bestTime">--</strong>
+          </div>
+        </div>
+
+        <div class="legend-box">
+          <p class="legend-title">Traffic level</p>
+          <div class="legend-row">
+            <span class="pill low">Low</span>
+            <span class="pill medium">Moderate</span>
+            <span class="pill heavy">Heavy</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Hotspots</h2>
+          <div id="hotspotList" class="hotspot-list"></div>
+        </div>
+      </aside>
+
+      <main class="main-panel panel">
+        <div class="topbar">
+          <span class="eyebrow">Live direction map</span>
+          <span id="statusBadge" class="status good">Route stable</span>
+        </div>
+
+        <div class="map-frame">
+          <svg id="mapSvg" viewBox="0 0 900 560" role="img" aria-label="Traffic map"></svg>
+        </div>
+
+        <div class="legend-row map-legend">
+          <span class="legend-item"><i class="dot green"></i> Smooth</span>
+          <span class="legend-item"><i class="dot amber"></i> Moderate</span>
+          <span class="legend-item"><i class="dot red"></i> Heavy</span>
+        </div>
+
+        <div class="bottom-grid">
+          <section class="card">
+            <h2>Recommended routes</h2>
+            <div id="routeList" class="routes-list"></div>
+          </section>
+
+          <section class="card">
+            <h2>Insights</h2>
+            <div id="insights" class="insights-list"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
